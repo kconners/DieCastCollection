@@ -12,8 +12,8 @@ import FoundationNetworking
 #endif
 
 struct ContentView: View {
-    @State private var username = "";
-    @State private var password = "";
+    @State private var username = "kconners";
+    @State private var password = "Password1*";
     @State private var isLoggedIn = false;
     @State private var navPath = NavigationPath()
 
@@ -64,7 +64,7 @@ struct ContentView: View {
         let semaphore = DispatchSemaphore(value: 0)
         let loginCredentials = loginCreds(user_name: username, password: password)
         
-        var request = URLRequest(url: URL(string: "http://127.0.0.1:3000/users/login")!, timeoutInterval: Double.infinity)
+        var request = URLRequest(url: URL(string: urlForApi + "/users/login")!, timeoutInterval: Double.infinity)
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         
@@ -82,11 +82,10 @@ struct ContentView: View {
                 return
             }
             do {
-                print("here")
                 let credInfo = try JSONDecoder().decode(currentUser.self, from: data)
                 UserDefaults.standard.set(credInfo.token, forKey: "token")
+                UserDefaults.standard.set(credInfo.id, forKey: "id")
                 isLoggedIn = true
-                print("there")
             }
             catch {
                 print("JSONSerialization error:", error)
